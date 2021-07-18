@@ -457,9 +457,9 @@ kubectl get deployment metrics-server -n kube-system
 
 # 测试使用
 # 参考：https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#top
-`kubectl top node`
-`kubectl top pod -A --``sort``-``by`` cpu
-kubectl top pod -A --sort-by memory`
+kubectl top node
+kubectl top pod -A --sort-by cpu
+kubectl top pod -A --sort-by memory
 
 
 ```
