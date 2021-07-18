@@ -77,7 +77,7 @@ kubectl version --short --client
 ### 其他相关软件及设置
 
 ```
-`# 其他相关软件及设置`
+# 其他相关软件及设置
 sudo yum -y install jq gettext bash-completion moreutils git
 
 echo 'yq() {
@@ -97,7 +97,7 @@ kubectl completion bash >>  ~/.bash_completion
 eksctl completion bash >> ~/.bash_completion
 . /etc/profile.d/bash_completion.sh
 . ~/.bash_completion
-  `  `
+
 ```
 
 
@@ -282,18 +282,20 @@ eksctl scale nodegroup --cluster eks-us-119 \
 ### 查看集群信息
 
 ```
-`# 查看当前有效集群 Cluster`
-`eksctl ``get`` cluster ``--``region us-west-2`
 
-`# 查看当前集群 NodeGroups`
-`eksctl ``get`` nodegroup  ``--``cluster eks-us-119`` ``--``region us-west-2`
+# 查看当前有效集群 Cluster
+eksctl get cluster --region us-west-2
 
-`# 查看 NodeGroup 节点Role`
-`STACK_NAME``=``$``(``eksctl ``get`` nodegroup ``--``cluster eks-us-119`` ``--``region us-west-2`` ``-``o json ``|`` jq ``-``r ``'.[].StackName'``)`
-`ROLE_NAME``=``$``(``aws cloudformation describe``-``stack``-``resources ``--``stack``-``name $STACK_NAME --region us-west-2 ``|`` jq ``-``r ``'.StackResources[] | select(.ResourceType=="AWS::IAM::Role") | .PhysicalResourceId'``)`
-`echo ``"export ROLE_NAME=${ROLE_NAME}"`` ``|`` tee ``-``a ``~/.``bash_profile
+# 查看当前集群 NodeGroups
+eksctl get nodegroup  --cluster eks-us-119 --region us-west-2
 
-`
+# 查看 NodeGroup 节点Role
+STACK_NAME=$(eksctl get nodegroup --cluster eks-us-119 --region us-west-2 -o json | jq -r '.[].StackName')
+ROLE_NAME=$(aws cloudformation describe-stack-resources --stack-name $STACK_NAME --region us-west-2 | jq -r '.StackResources[] | select(.ResourceType=="AWS::IAM::Role") | .PhysicalResourceId')
+echo "export ROLE_NAME=${ROLE_NAME}" | tee -a ~/.bash_profile
+
+
+
 ```
 
 
@@ -563,13 +565,15 @@ https://github.com/kubernetes/kube-state-metrics/blob/master/docs/node-metrics.m
 
 
 ```
-`# Uninstall`
+# Uninstall
 
-`helm uninstall prometheus ``--``namespace`` prometheus`
-`kubectl ``delete`` ns prometheus`
+helm uninstall prometheus --namespace prometheus
+kubectl delete ns prometheus
 
-`helm uninstall grafana ``--``namespace`` grafana`
-`kubectl ``delete`` ns grafana`
+helm uninstall grafana --namespace grafana
+kubectl delete ns grafana
+
+
 
 
 ```
@@ -852,26 +856,6 @@ data:
 
 ```
 
-### NameSpace 无法删除
-
-```
-kubectl api-resources --verbs=list --namespaced -o name \
-  | xargs -n 1 kubectl get --show-kind --ignore-not-found -n kubernetes-dashboard
-  
-# 成功
-kubectl get apiservice|grep False
-v1beta1.metrics.k8s.io                 kube-system/metrics-server   False (FailedDiscoveryCheck)   26d
-
-kubectl delete apiservice v1beta1.metrics.k8s.io
-apiservice.apiregistration.k8s.io "v1beta1.metrics.k8s.io" deleted
-
-for NS in $(kubectl get ns 2>/dev/null | grep Terminating | cut -f1 -d ' '); do
-  kubectl get ns $NS -o json > /tmp/$NS.json
-  sed -i '' "s/\"kubernetes\"//g" /tmp/$NS.json
-  kubectl replace --raw "/api/v1/namespaces/$NS/finalize" -f /tmp/$NS.json
-done
-
-
 ```
 
 ### 多集群管理
@@ -884,19 +868,19 @@ https://kubernetes.io/zh/docs/reference/kubectl/cheatsheet/
 
 ```
 
-`sudo yum install jq ``-``y`
+sudo yum install jq -y
 
 # 进入 Config 文件所在目录
-`cd ``~/.``kube`
+cd ~/.kube
 
 # 默认配置文件名为 config 
-`kubectl config ``--``kubeconfig``=``config view`
+kubectl config --kubeconfig=config view
 
 # 获取 Cluster 名
-`kubectl config ``--``kubeconfig``=``config view ``-``ojson``|``jq ``-``r ``'.clusters[].name'`
+kubectl config --kubeconfig=config view -ojson|jq -r '.clusters[].name'
 
 # 获取 Context 名
-`kubectl config ``get``-``contexts`
+kubectl config get-contexts
 
 # 获取当前 Context 名
 kubectl config current-context
@@ -907,78 +891,11 @@ kubectl config --kubeconfig=config use-context i-08bfacb20e8934e51@eks-us-119.us
 
 
 
-```
-
-
-
-### Kubeconfig 配置
-
-参考：
-为 Amazon EKS 创建 kubeconfig
-https://docs.aws.amazon.com/zh_cn/eks/latest/userguide/create-kubeconfig.html
-
-Amazon EKS 问题排查
-https://docs.aws.amazon.com/zh_cn/eks/latest/userguide/troubleshooting.html#unauthorized
-
-我无法担任角色
-https://docs.aws.amazon.com/zh_cn/IAM/latest/UserGuide/troubleshoot_roles.html#troubleshoot_roles_cant-assume-role
 
 ```
-## 获知将进行STS操作的当前IAM User信息
-aws sts get-caller-identity --profile hkg
-{
-    "UserId": "AIDAJE2VBDU67ZP6X7KEW",
-    "Account": "861504766936",
-    "Arn": "arn:aws:iam::861504766936:user/admin"
-}
 
 
-## 创建/更新本地 kubeconfig 信息
-`aws eks update``-``kubeconfig ``--``name eks-us-119`` ``--``region us-west-2`` ``--``profile ``hkg`
-Added new context arn:aws:eks:us-west-2:861504766936:cluster/eks-us-119 to /Users/shifei/.kube/config
 
-## 错误信息 一
-## 目前访问EKS集群的用户 与 创建EKS的用户不同
-## EKS集群创建时使用 EC2 Role进行
-error: You must be logged in to the server (Unauthorized)
-
-## 使用当时创建EKS集群的EC2 Role 更新 kubeconfig 信息
-`aws eks update``-``kubeconfig ``--``region us-west-2`` ``--``name eks-us-119`` ``--``role``-``arn arn``:``aws``:``iam``::``861504766936``:``role``/``ec2``-``admin``-``role --profile global`
-
-
-## 错误信息 二
-An error occurred (AccessDenied) when calling the AssumeRole operation: User: arn:aws:iam::861504766936:user/admin is not authorized to perform: sts:AssumeRole on resource: arn:aws:iam::861504766936:role/ec2-admin-role
-Unable to connect to the server: getting credentials: exec: exit status 255
-## 当前用户并非EC2 role的 “**Trusted entities**”
-
-## 控制台修改 EC2 Role的 “Trust Relationship” policy，增加当前用户信息
-
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "arn:aws:iam::861504766936:user/admin",
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-
-kubectl get svc
-NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
-kubernetes   ClusterIP   10.100.0.1   <none>        443/TCP   3d
-```
-
-```
-## 后续如更换新的管理机，如绑定的 EC2 Role 跟之前创建 EKS 集群时的EC2 Role没有差异
-## 只需在新的管理机执行以下命令即可
-aws eks update-kubeconfig --region us-west-2 --name eks-us-119 --role-arn arn:aws:iam::861504766936:role/ec2-admin-role --profile global
-
-
-```
 
 
 
