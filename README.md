@@ -58,15 +58,15 @@ eksctl version
 # 安装和配置 `kubectl （>1.20）`
 # 参考：https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
 
-`curl ``-``o kubectl https``:``//amazon-eks.s3.us-west-2.amazonaws.com/1.20.4/2021-04-12/bin/linux/amd64/kubectl`
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.20.4/2021-04-12/bin/linux/amd64/kubectl
 
-`chmod ``+``x ``./``kubectl`
-`sudo mv ``./``kubectl ``/``usr``/``local``/``bin`
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin
 
-`which kubectl`
-`/``usr``/``local``/``bin``/``kubectl`
+which kubectl
+/usr/local/bin/kubectl
 
-`kubectl version ``--``short`` ``--``client`
+kubectl version --short --client
 # Client Version: v1.20.4-eks-6b7464
 
 
