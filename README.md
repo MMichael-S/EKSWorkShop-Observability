@@ -642,6 +642,7 @@ https://www.eksworkshop.com/intermediate/250_cloudwatch_container_insights/cwala
 
 参考：
 https://www.eksworkshop.com/intermediate/245_x-ray/microservices/
+https://github.com/aws-samples/eks-workshop/tree/main/content/intermediate/245_x-ray
 https://aws.amazon.com/cn/blogs/compute/application-tracing-on-kubernetes-with-aws-x-ray/
 
 ```
