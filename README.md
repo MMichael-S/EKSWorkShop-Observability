@@ -856,8 +856,6 @@ data:
 
 ```
 
-```
-
 ### 多集群管理
 
 参考：
@@ -890,13 +888,7 @@ cd ~/.kube
 kubectl config --kubeconfig=config use-context i-08bfacb20e8934e51@eks-us-119.us-west-2.eksctl.io
 
 
-
-
 ```
-
-
-
-
 
 
 ## 参考文档
