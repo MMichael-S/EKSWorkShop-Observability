@@ -78,17 +78,17 @@ kubectl version --short --client
 
 ```
 `# 其他相关软件及设置`
-`sudo yum ``-``y install jq gettext bash``-``completion moreutils git`
+sudo yum -y install jq gettext bash-completion moreutils git
 
-`echo ``'yq() {`
-`  docker run --rm -i -v "${PWD}":/workdir mikefarah/yq yq "$@"`
-`}'`` ``|`` tee ``-``a ``~``/.bashrc && source ~/``.``bashrc`
+echo 'yq() {
+  docker run --rm -i -v "${PWD}":/workdir mikefarah/yq yq "$@"
+}' | tee -a ~/.bashrc && source ~/.bashrc
 
-`# Verify the binaries are in the path and executable`
-`for`` command ``in`` kubectl jq envsubst aws`
-`  ``do`
-`    which $command ``&>``/dev/``null`` ``&&`` echo ``"$command in path"`` ``||`` echo ``"$command NOT FOUND"`
-`  ``done`
+# Verify the binaries are in the path and executable
+for command in kubectl jq envsubst aws
+  do
+    which $command &>/dev/null && echo "$command in path" || echo "$command NOT FOUND"
+  done
 
 kubectl completion bash >>  ~/.bash_completion
 . /etc/profile.d/bash_completion.sh
