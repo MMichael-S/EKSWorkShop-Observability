@@ -524,7 +524,7 @@ kubectl get all -n grafana
 export ELB=$(kubectl get svc -n grafana grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 echo "http://$ELB"
 
-# http://a8923cfa543964dc199771492a40b056-1041138239.us-west-2.elb.amazonaws.com
+# http://xxxxxxxxx-xxxxxx.us-west-2.elb.amazonaws.com
 用户名：
 admin
 密码：
@@ -686,10 +686,10 @@ kubectl describe services x-ray-sample-front-k8s x-ray-sample-back-k8s
 kubectl get service x-ray-sample-front-k8s -o wide
 
 NAME                     TYPE           CLUSTER-IP     EXTERNAL-IP                                                              PORT(S)        AGE   SELECTOR
-x-ray-sample-front-k8s   LoadBalancer   172.20.229.8   a8862e82c51d948ef86d97762d8caf2a-1349520127.us-west-2.elb.amazonaws.com
+x-ray-sample-front-k8s   LoadBalancer   172.20.229.8   xxxxxxx-xxxxxxxx.us-west-2.elb.amazonaws.com
 
 # 访问
-http://a8862e82c51d948ef86d97762d8caf2a-1349520127.us-west-2.elb.amazonaws.com/
+http://xxxxxx-xxxxxxxx.us-west-2.elb.amazonaws.com/
 
 ```
 
@@ -748,12 +748,12 @@ kubectl get service ecsdemo-frontend
 kubectl get service ecsdemo-frontend -o wide
 
 # NAME               TYPE           CLUSTER-IP     EXTERNAL-IP                                                              PORT(S)        AGE   SELECTOR
-# ecsdemo-frontend   LoadBalancer   10.100.79.56   a6aa583709dc441758e192e3dd927a9c-140386907.us-west-2.elb.amazonaws.com   80:31934/TCP   45s   app=ecsdemo-frontend
+# ecsdemo-frontend   LoadBalancer   10.100.79.56   xxxxxxxx-xxxxxxxx.us-west-2.elb.amazonaws.com   80:31934/TCP   45s   app=ecsdemo-frontend
 
 # 等待 ELB 创建完毕
 ELB=$(kubectl get service ecsdemo-frontend -o json | jq -r '.status.loadBalancer.ingress[].hostname')
 echo $ELB
-# a6aa583709dc441758e192e3dd927a9c-140386907.us-west-2.elb.amazonaws.com
+# xxxxxxxxxxxxx-xxxxxxxxxxxx.us-west-2.elb.amazonaws.com
 
 # curl -m3 -v $ELB
 
