@@ -337,8 +337,7 @@ kubectl apply -f recommended.yaml
 
 # Create an eks-admin service account and cluster role binding 
 
-vi eks-admin-service-account.yaml
-
+cat << EoF > ./eks-admin-service-account.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -357,6 +356,7 @@ subjects:
 - kind: ServiceAccount
   name: eks-admin
   namespace: kube-system
+EoF
 
 kubectl apply -f eks-admin-service-account.yaml
 
